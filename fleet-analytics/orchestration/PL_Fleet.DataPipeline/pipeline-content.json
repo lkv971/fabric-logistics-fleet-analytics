@@ -138,6 +138,56 @@
           ],
           "scriptBlockExecutionTimeout": "02:00:00"
         }
+      },
+      {
+        "name": "SM_Fleet_Refresh",
+        "type": "PBISemanticModelRefresh",
+        "dependsOn": [
+          {
+            "activity": "UpdateLogsTable",
+            "dependencyConditions": [
+              "Succeeded"
+            ]
+          }
+        ],
+        "policy": {
+          "timeout": "0.12:00:00",
+          "retry": 0,
+          "retryIntervalInSeconds": 30,
+          "secureOutput": false,
+          "secureInput": false
+        },
+        "typeProperties": {
+          "method": "post",
+          "waitOnCompletion": true,
+          "commitMode": "Transactional",
+          "operationType": "SemanticModelRefresh",
+          "groupId": "392a2d84-c0fd-45f9-9de2-248d1f8126fd",
+          "datasetId": "9225467d-6833-4e72-950a-b8bc0a847188",
+          "objects": [
+            {
+              "table": "Customers"
+            },
+            {
+              "table": "Drivers"
+            },
+            {
+              "table": "Costs"
+            },
+            {
+              "table": "Freights"
+            },
+            {
+              "table": "Dates"
+            },
+            {
+              "table": "Vehicles"
+            }
+          ]
+        },
+        "externalReferences": {
+          "connection": "c02876ce-2b69-40c2-aa37-0468298fcab6"
+        }
       }
     ],
     "variables": {
