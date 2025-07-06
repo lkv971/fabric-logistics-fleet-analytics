@@ -1,0 +1,11 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/gitIntegration/platformProperties/2.0.0/schema.json",
+  "metadata": {
+    "type": "Report",
+    "displayName": "Fleet report"
+  },
+  "config": {
+    "version": "2.0",
+    "logicalId": "88caf6de-2ee8-837f-4a6f-1b15b96c11ab"
+  }
+}

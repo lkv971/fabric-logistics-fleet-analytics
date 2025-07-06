@@ -1,0 +1,41 @@
+table Drivers
+	lineageTag: 033687c3-70db-4a35-8f69-e8414b7e2492
+	sourceLineageTag: [Fleet].[Drivers]
+
+	column 'Driver ID'
+		dataType: int64
+		isHidden
+		formatString: 0
+		sourceProviderType: int
+		lineageTag: 864b9034-a56d-4474-a191-957e2bd156d4
+		sourceLineageTag: DriverID
+		summarizeBy: none
+		sourceColumn: DriverID
+
+		changedProperty = SummarizeBy
+
+		changedProperty = IsHidden
+
+		changedProperty = Name
+
+		annotation SummarizationSetBy = User
+
+	column Driver
+		dataType: string
+		sourceProviderType: varchar(200)
+		lineageTag: 7ab119d9-7dca-45c3-ac0f-33d55cc47371
+		sourceLineageTag: Driver
+		summarizeBy: none
+		sourceColumn: Driver
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Drivers = entity
+		mode: directLake
+		source
+			entityName: Drivers
+			schemaName: Fleet
+			expressionSource: DatabaseQuery
+
+	annotation PBI_ResultType = Table
+

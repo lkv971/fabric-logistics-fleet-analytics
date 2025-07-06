@@ -1,0 +1,24 @@
+relationship 653ee35f-e8a1-9597-a9e1-46d17d5910ea
+	fromColumn: Costs.'Driver ID'
+	toColumn: Drivers.'Driver ID'
+
+relationship 83416ca1-8a23-1c7e-c826-3d01b8fd9f97
+	fromColumn: Costs.Date
+	toColumn: Dates.Date
+
+relationship a4378ae9-882c-a7ca-3d6c-e02cc321b141
+	fromColumn: Freights.Date
+	toColumn: Dates.Date
+
+relationship bfb5c4b5-2167-841b-d0e6-d2cf39113284
+	fromColumn: Freights.'Customer ID'
+	toColumn: Customers.'Customer ID'
+
+relationship 705bc46c-06c7-8216-49d5-6cd79f329b1c
+	fromColumn: Costs.'Vehicle ID'
+	toColumn: Vehicles.'Vehicle ID'
+
+relationship df915f47-9ff1-cf48-2d52-f0edfc2a071c
+	fromColumn: Freights.'Vehicle ID'
+	toColumn: Vehicles.'Vehicle ID'
+

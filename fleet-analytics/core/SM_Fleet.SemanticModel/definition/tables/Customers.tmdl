@@ -1,0 +1,114 @@
+table Customers
+	lineageTag: 1697de70-0a3a-4c7f-bbba-40ac20484ca2
+	sourceLineageTag: [Fleet].[Customers]
+
+	column 'Customer ID'
+		dataType: int64
+		isHidden
+		formatString: 0
+		sourceProviderType: int
+		lineageTag: 4e038f29-17b0-44f7-a5c0-90e3904bf05c
+		sourceLineageTag: CustomerID
+		summarizeBy: none
+		sourceColumn: CustomerID
+
+		changedProperty = SummarizeBy
+
+		changedProperty = IsHidden
+
+		changedProperty = Name
+
+		annotation SummarizationSetBy = User
+
+	column City
+		dataType: string
+		sourceProviderType: varchar(200)
+		lineageTag: 451e4f7b-282e-4e7b-b8a4-20a55f3ebae2
+		sourceLineageTag: City
+		dataCategory: City
+		summarizeBy: none
+		sourceColumn: City
+
+		changedProperty = DataCategory
+
+		annotation SummarizationSetBy = Automatic
+
+	column State
+		dataType: string
+		sourceProviderType: varchar(10)
+		lineageTag: b72af3f9-e7a1-40b6-b2b9-f39855429975
+		sourceLineageTag: State
+		dataCategory: StateOrProvince
+		summarizeBy: none
+		sourceColumn: State
+
+		changedProperty = DataCategory
+
+		annotation SummarizationSetBy = Automatic
+
+	column Latitude
+		dataType: double
+		sourceProviderType: float
+		displayFolder: Geography Coordinates
+		lineageTag: 007c819f-6310-489c-a2e8-747d0ca70169
+		sourceLineageTag: Latitude
+		dataCategory: Latitude
+		summarizeBy: none
+		sourceColumn: Latitude
+
+		changedProperty = SummarizeBy
+
+		changedProperty = DataCategory
+
+		changedProperty = DisplayFolder
+
+		annotation SummarizationSetBy = User
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column Longitude
+		dataType: double
+		sourceProviderType: float
+		displayFolder: Geography Coordinates
+		lineageTag: ffe1b9fd-2beb-447e-8804-0e0e5d590e31
+		sourceLineageTag: Longitude
+		dataCategory: Longitude
+		summarizeBy: none
+		sourceColumn: Longitude
+
+		changedProperty = SummarizeBy
+
+		changedProperty = DataCategory
+
+		changedProperty = DisplayFolder
+
+		annotation SummarizationSetBy = User
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	hierarchy 'Geography Hierarchy'
+		lineageTag: a4e88866-2b5c-4e9c-bbf4-7b1ad75974ae
+
+		level State
+			lineageTag: b0ac4a78-21a2-417b-81cc-b82955b419b4
+			column: State
+
+		level City
+			lineageTag: bd5c71a5-876a-4cb9-935e-a45567e1b875
+			column: City
+
+		level 'Customer ID'
+			lineageTag: d2aaa211-77ae-4a9d-9095-9e1575030d68
+			column: 'Customer ID'
+
+		changedProperty = Name
+
+	partition Customers = entity
+		mode: directLake
+		source
+			entityName: Customers
+			schemaName: Fleet
+			expressionSource: DatabaseQuery
+
+	annotation PBI_ResultType = Table
+

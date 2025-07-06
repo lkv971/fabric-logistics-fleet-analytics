@@ -1,0 +1,29 @@
+model Model
+	culture: en-US
+	collation: Latin1_General_100_BIN2_UTF8
+	defaultPowerBIDataSourceVersion: powerBI_V3
+	discourageImplicitMeasures
+	sourceQueryCulture: en-US
+	dataAccessOptions
+		legacyRedirects
+		returnErrorValuesAsNull
+
+annotation __PBI_TimeIntelligenceEnabled = 0
+
+annotation PBIDesktopVersion = 2.145.7714.2 (Main)+bdb2652de4d5db3452e62b6a179b577d9e46fd92
+
+annotation PBI_QueryOrder = ["DatabaseQuery"]
+
+annotation PBI_ProTooling = ["WebModelingEdit","CalcGroup"]
+
+annotation __TEdtr = 1
+
+ref table Customers
+ref table Drivers
+ref table Costs
+ref table Freights
+ref table Dates
+ref table Vehicles
+
+ref cultureInfo en-US
+

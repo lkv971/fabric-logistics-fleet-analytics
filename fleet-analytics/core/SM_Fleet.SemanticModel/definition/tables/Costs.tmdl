@@ -1,0 +1,318 @@
+table Costs
+	lineageTag: c0daff23-1d89-4aa9-ac5b-386dec5fc636
+	sourceLineageTag: [Fleet].[Costs]
+
+	measure 'Total Fixed Cost' = SUM(Costs[Fixed Cost])
+		formatString: \$#,0.00;(\$#,0.00);\$#,0.00
+		displayFolder: Cost Measures
+		lineageTag: 009ddf37-705b-41b2-88cf-4c28b9773caa
+
+		changedProperty = Name
+
+		changedProperty = DisplayFolder
+
+		changedProperty = FormatString
+
+		annotation PBI_FormatHint = {"currencyCulture":"en-US"}
+
+	measure 'Total Fuel Cost' = SUM(Costs[Fuel])
+		formatString: \$#,0.00;(\$#,0.00);\$#,0.00
+		displayFolder: Cost Measures
+		lineageTag: f35c6840-7db8-41f0-9f7a-f33caa87cfbc
+
+		changedProperty = Name
+
+		changedProperty = DisplayFolder
+
+		changedProperty = FormatString
+
+		annotation PBI_FormatHint = {"currencyCulture":"en-US"}
+
+	measure 'Total KM Traveled' = SUM(Costs[KM Traveled])
+		formatString: 0
+		displayFolder: Efficiency
+		lineageTag: fe2949c1-1046-41c5-bb33-48d8a9effb74
+
+		changedProperty = Name
+
+		changedProperty = DisplayFolder
+
+	measure 'Total Liters Consumed' = SUM(Costs[Liters])
+		formatString: 0.00
+		displayFolder: Efficiency
+		lineageTag: e3201b97-5a2a-4eee-8492-72246774b2fc
+
+		changedProperty = Name
+
+		changedProperty = DisplayFolder
+
+		changedProperty = FormatString
+
+	measure 'Total Maintenance Cost' = SUM(Costs[Maintenance])
+		formatString: \$#,0.00;(\$#,0.00);\$#,0.00
+		displayFolder: Cost Measures
+		lineageTag: 9e8d343e-a5f2-4606-b8d1-605457653b65
+
+		changedProperty = Name
+
+		changedProperty = DisplayFolder
+
+		changedProperty = FormatString
+
+		annotation PBI_FormatHint = {"currencyCulture":"en-US"}
+
+	measure 'Total Cost' = [Total Fixed Cost] + [Total Fuel Cost] + [Total Maintenance Cost]
+		formatString: \$#,0.00;(\$#,0.00);\$#,0.00
+		displayFolder: Cost Measures
+		lineageTag: e5a547c6-caed-4041-9a44-50bc7fea356a
+
+		changedProperty = Name
+
+		changedProperty = DisplayFolder
+
+		changedProperty = FormatString
+
+		annotation PBI_FormatHint = {"currencyCulture":"en-US"}
+
+	measure 'Cost per KM' = DIVIDE([Total Cost], [Total KM Traveled], 0)
+		formatString: \$#,0.00;(\$#,0.00);\$#,0.00
+		displayFolder: Cost Measures
+		lineageTag: cd4c4ab9-a6dd-433c-97c5-f174a158df6c
+
+		changedProperty = Name
+
+		changedProperty = DisplayFolder
+
+		changedProperty = FormatString
+
+		annotation PBI_FormatHint = {"currencyCulture":"en-US"}
+
+	measure 'Fixed Cost per KM' = DIVIDE([Total Fixed Cost], [Total KM Traveled], 0)
+		formatString: \$#,0.00;(\$#,0.00);\$#,0.00
+		displayFolder: Cost Measures
+		lineageTag: 9ad99ba2-197e-4549-ac56-5e5ba889049f
+
+		changedProperty = Name
+
+		changedProperty = DisplayFolder
+
+		changedProperty = FormatString
+
+		annotation PBI_FormatHint = {"currencyCulture":"en-US"}
+
+	measure 'Fuel Cost per KM' = DIVIDE([Total Fuel Cost], [Total KM Traveled], 0)
+		formatString: \$#,0.00;(\$#,0.00);\$#,0.00
+		displayFolder: Cost Measures
+		lineageTag: b21f734e-61c4-427e-9830-84d9c547becc
+
+		changedProperty = Name
+
+		changedProperty = DisplayFolder
+
+		changedProperty = FormatString
+
+		annotation PBI_FormatHint = {"currencyCulture":"en-US"}
+
+	measure 'Liters Consumed per KM' = DIVIDE([Total Liters Consumed], [Total KM Traveled], 0)
+		displayFolder: Cost Measures
+		lineageTag: 600826da-1700-4004-bfd0-655b67809dfd
+
+		changedProperty = Name
+
+		changedProperty = DisplayFolder
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Maintenance Cost per KM' = DIVIDE([Total Maintenance Cost], [Total KM Traveled], 0)
+		formatString: \$#,0.00;(\$#,0.00);\$#,0.00
+		displayFolder: Cost Measures
+		lineageTag: 48bd36aa-089a-406f-bf9a-3d2fb3224438
+
+		changedProperty = Name
+
+		changedProperty = DisplayFolder
+
+		changedProperty = FormatString
+
+		annotation PBI_FormatHint = {"currencyCulture":"en-US"}
+
+	measure 'Fuel Cost per Liter' = DIVIDE([Total Fuel Cost], [Total Liters Consumed], 0)
+		formatString: \$#,0.00;(\$#,0.00);\$#,0.00
+		displayFolder: Cost Measures
+		lineageTag: 8c2d6892-cbab-4c34-a846-9b533b217c40
+
+		changedProperty = Name
+
+		changedProperty = DisplayFolder
+
+		changedProperty = FormatString
+
+		annotation PBI_FormatHint = {"currencyCulture":"en-US"}
+
+	measure 'Liters per 100 KM' = DIVIDE([Total Liters Consumed] * 100, [Total KM Traveled], 0)
+		formatString: 0
+		displayFolder: Efficiency
+		lineageTag: 71fa27e9-fb92-4ad0-ba02-c15a7a02e4fe
+
+		changedProperty = Name
+
+		changedProperty = DisplayFolder
+
+		changedProperty = FormatString
+
+	measure 'Driver Count' = DISTINCTCOUNT(Costs[Driver ID])
+		formatString: 0
+		displayFolder: Drivers Info
+		lineageTag: c8dd52a4-9b6d-4866-b73b-23243147e340
+
+		changedProperty = Name
+
+		changedProperty = DisplayFolder
+
+	column Date
+		dataType: dateTime
+		formatString: Short Date
+		sourceProviderType: date
+		lineageTag: fdb1bad6-f9a0-408f-93c1-e1cde20c1a64
+		sourceLineageTag: Date
+		summarizeBy: none
+		sourceColumn: Date
+
+		changedProperty = DataType
+
+		changedProperty = FormatString
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+		annotation PBI_FormatHint = {"isCustom":true}
+
+	column 'Vehicle ID'
+		dataType: int64
+		isHidden
+		formatString: 0
+		sourceProviderType: int
+		lineageTag: 221ff830-5215-4df4-87da-356cfecbd3a4
+		sourceLineageTag: VehicleID
+		summarizeBy: none
+		sourceColumn: VehicleID
+
+		changedProperty = SummarizeBy
+
+		changedProperty = IsHidden
+
+		changedProperty = Name
+
+		annotation SummarizationSetBy = User
+
+	column 'Driver ID'
+		dataType: int64
+		isHidden
+		formatString: 0
+		sourceProviderType: int
+		lineageTag: 889875ab-9a82-4c17-8cdc-776c09cd4854
+		sourceLineageTag: DriverID
+		summarizeBy: none
+		sourceColumn: DriverID
+
+		changedProperty = SummarizeBy
+
+		changedProperty = IsHidden
+
+		changedProperty = Name
+
+		annotation SummarizationSetBy = User
+
+	column 'KM Traveled'
+		dataType: int64
+		formatString: 0
+		sourceProviderType: int
+		lineageTag: 22fb5f6f-d32f-46f7-8bce-3932933f5de0
+		sourceLineageTag: KMTraveled
+		summarizeBy: none
+		sourceColumn: KMTraveled
+
+		changedProperty = SummarizeBy
+
+		changedProperty = Name
+
+		annotation SummarizationSetBy = User
+
+	column Liters
+		dataType: double
+		formatString: 0.00
+		sourceProviderType: float
+		lineageTag: af89324b-7357-41c2-9f62-be4b1a154076
+		sourceLineageTag: Liters
+		summarizeBy: none
+		sourceColumn: Liters
+
+		changedProperty = SummarizeBy
+
+		changedProperty = FormatString
+
+		annotation SummarizationSetBy = User
+
+	column Fuel
+		dataType: double
+		formatString: \$#,0.00;(\$#,0.00);\$#,0.00
+		sourceProviderType: float
+		lineageTag: 0b17701f-a88b-4360-92cc-f5f2f61fcaa4
+		sourceLineageTag: Fuel
+		summarizeBy: none
+		sourceColumn: Fuel
+
+		changedProperty = SummarizeBy
+
+		changedProperty = FormatString
+
+		annotation SummarizationSetBy = User
+
+		annotation PBI_FormatHint = {"currencyCulture":"en-US"}
+
+	column Maintenance
+		dataType: double
+		formatString: \$#,0.00;(\$#,0.00);\$#,0.00
+		sourceProviderType: float
+		lineageTag: 8e97fba9-533f-4b2e-842f-da7feef4c64d
+		sourceLineageTag: Maintenance
+		summarizeBy: none
+		sourceColumn: Maintenance
+
+		changedProperty = SummarizeBy
+
+		changedProperty = FormatString
+
+		annotation SummarizationSetBy = User
+
+		annotation PBI_FormatHint = {"currencyCulture":"en-US"}
+
+	column 'Fixed Cost'
+		dataType: double
+		formatString: \$#,0.00;(\$#,0.00);\$#,0.00
+		sourceProviderType: float
+		lineageTag: d927cdb4-cb15-4818-883e-3edda13f2723
+		sourceLineageTag: FixedCost
+		summarizeBy: none
+		sourceColumn: FixedCost
+
+		changedProperty = SummarizeBy
+
+		changedProperty = FormatString
+
+		changedProperty = Name
+
+		annotation SummarizationSetBy = User
+
+		annotation PBI_FormatHint = {"currencyCulture":"en-US"}
+
+	partition Costs = entity
+		mode: directLake
+		source
+			entityName: Costs
+			schemaName: Fleet
+			expressionSource: DatabaseQuery
+
+	annotation PBI_ResultType = Table
+

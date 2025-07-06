@@ -1,0 +1,211 @@
+table Dates
+	lineageTag: 734da706-04a1-4b22-ace4-f948aebd8f93
+	sourceLineageTag: [Fleet].[Dates]
+	dataCategory: Time
+
+	measure 'Year to Date Revenue' = TOTALYTD([Total Revenue], Dates[Date])
+		displayFolder: Time Intelligence
+		lineageTag: 8352dd07-2b3f-400d-9031-5eb2a26c5764
+
+		changedProperty = Name
+
+		changedProperty = DisplayFolder
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Quarter to Date Revenue' = TOTALQTD([Total Revenue], Dates[Date])
+		displayFolder: Time Intelligence
+		lineageTag: 4a7a43fb-cc43-4f8a-bf4f-dd46ecab6ab6
+
+		changedProperty = Name
+
+		changedProperty = DisplayFolder
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Previous Year Revenue' = CALCULATE([Total Revenue], SAMEPERIODLASTYEAR(Dates[Date]))
+		displayFolder: Time Intelligence
+		lineageTag: f9efdad6-69f7-4481-a627-eb11c2927d49
+
+		changedProperty = Name
+
+		changedProperty = DisplayFolder
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Previous Quarter Revenue' = CALCULATE([Total Revenue], DATEADD(Dates[Date], -1, QUARTER))
+		displayFolder: Time Intelligence
+		lineageTag: 0807fb71-03fa-42f5-9903-51e2d6cdb226
+
+		changedProperty = Name
+
+		changedProperty = DisplayFolder
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'YoY Revenue Change' = [Total Revenue] - CALCULATE([Total Revenue], SAMEPERIODLASTYEAR(Dates[Date]))
+		displayFolder: Time Intelligence
+		lineageTag: 0c6bbccc-9c85-4ab8-93be-21e7c82f0d76
+
+		changedProperty = Name
+
+		changedProperty = DisplayFolder
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'YoY Growth Revenue %' = DIVIDE([Total Revenue] -[YoY Revenue Change], [YoY Revenue Change], 0)
+		displayFolder: Time Intelligence
+		lineageTag: bd378d38-b90a-48e9-861a-b8af11fcc6f4
+
+		changedProperty = Name
+
+		changedProperty = DisplayFolder
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column Date
+		dataType: dateTime
+		isKey
+		formatString: Short Date
+		sourceProviderType: date
+		lineageTag: 05b2c641-4843-49e7-ae25-00436053674a
+		sourceLineageTag: Date
+		summarizeBy: none
+		sourceColumn: Date
+
+		changedProperty = DataType
+
+		changedProperty = FormatString
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+		annotation PBI_FormatHint = {"isCustom":true}
+
+	column Year
+		dataType: int64
+		formatString: 0
+		sourceProviderType: int
+		lineageTag: fe7d20df-9c1e-4d31-8a03-6e49aca6e84a
+		sourceLineageTag: Year
+		summarizeBy: none
+		sourceColumn: Year
+
+		changedProperty = SummarizeBy
+
+		annotation SummarizationSetBy = User
+
+	column Quarter
+		dataType: int64
+		formatString: 0
+		sourceProviderType: int
+		lineageTag: 12b32541-440b-4e7e-b7fe-226803aade0e
+		sourceLineageTag: Quarter
+		summarizeBy: none
+		sourceColumn: Quarter
+
+		changedProperty = SummarizeBy
+
+		annotation SummarizationSetBy = User
+
+	column 'Month Number'
+		dataType: int64
+		formatString: 0
+		sourceProviderType: int
+		lineageTag: d0c8163a-5303-4314-8069-5bd3610841b9
+		sourceLineageTag: MonthNumber
+		summarizeBy: none
+		sourceColumn: MonthNumber
+
+		changedProperty = SummarizeBy
+
+		changedProperty = Name
+
+		annotation SummarizationSetBy = User
+
+	column Month
+		dataType: string
+		sourceProviderType: varchar(50)
+		lineageTag: 3590609d-7297-4555-ab92-81677db54787
+		sourceLineageTag: MonthName
+		summarizeBy: none
+		sourceColumn: MonthName
+		sortByColumn: 'Month Number'
+
+		changedProperty = Name
+
+		changedProperty = SortByColumn
+
+		annotation SummarizationSetBy = Automatic
+
+	column Day
+		dataType: int64
+		formatString: 0
+		sourceProviderType: int
+		lineageTag: 319cefbc-d9f4-4f21-bc8e-3b651afc3861
+		sourceLineageTag: Day
+		summarizeBy: none
+		sourceColumn: Day
+
+		changedProperty = SummarizeBy
+
+		annotation SummarizationSetBy = User
+
+	column 'Day Name'
+		dataType: string
+		sourceProviderType: varchar(50)
+		lineageTag: 69d98629-8833-45ec-9f85-dbf46ecb16ea
+		sourceLineageTag: DayName
+		summarizeBy: none
+		sourceColumn: DayName
+
+		changedProperty = Name
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Day Of Week'
+		dataType: int64
+		formatString: 0
+		sourceProviderType: int
+		lineageTag: 12ac3269-cbee-42c9-8dba-5b9c5c8f9cb2
+		sourceLineageTag: DayOfWeek
+		summarizeBy: none
+		sourceColumn: DayOfWeek
+
+		changedProperty = SummarizeBy
+
+		changedProperty = Name
+
+		annotation SummarizationSetBy = User
+
+	hierarchy 'Calendar Hierarchy'
+		lineageTag: 58866966-4d13-47fb-95e0-10e9719f6abd
+
+		level Year
+			lineageTag: 518f70e7-eb55-42f9-8680-16dcdaf1f1b2
+			column: Year
+
+		level Quarter
+			lineageTag: 6405d39b-6987-46c8-a9dc-18d99369caf0
+			column: Quarter
+
+		level Month
+			lineageTag: 64e82e01-e67f-4285-88e7-88ab3380e6d9
+			column: Month
+
+		level Day
+			lineageTag: 0a3a55bc-ae08-46d8-ba7d-5320f9b85909
+			column: Day
+
+		changedProperty = Name
+
+	partition Dates = entity
+		mode: directLake
+		source
+			entityName: Dates
+			schemaName: Fleet
+			expressionSource: DatabaseQuery
+
+	annotation PBI_ResultType = Table
+

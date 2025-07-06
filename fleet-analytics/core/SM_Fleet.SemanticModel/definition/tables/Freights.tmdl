@@ -1,0 +1,333 @@
+table Freights
+	lineageTag: 9557da3f-d7da-44d3-b598-9bb2c4a89919
+	sourceLineageTag: [Fleet].[Freights]
+
+	measure 'Total Revenue' = SUM(Freights[Net Revenue])
+		formatString: \$#,0.00;(\$#,0.00);\$#,0.00
+		displayFolder: Freight Measures
+		lineageTag: 144c7856-2ba3-4b76-90e8-6c0799b689e0
+
+		changedProperty = Name
+
+		changedProperty = DisplayFolder
+
+		changedProperty = FormatString
+
+		annotation PBI_FormatHint = {"currencyCulture":"en-US"}
+
+	measure 'Total Goods Value' = SUM(Freights[Goods Value])
+		formatString: \$#,0.00;(\$#,0.00);\$#,0.00
+		displayFolder: Freight Measures
+		lineageTag: 9ae03c41-5d54-42a9-bd43-b6fc2077c292
+
+		changedProperty = Name
+
+		changedProperty = DisplayFolder
+
+		changedProperty = FormatString
+
+		annotation PBI_FormatHint = {"currencyCulture":"en-US"}
+
+	measure 'Total Weight' = SUM(Freights[Weight (Kg)])
+		formatString: 0.00
+		displayFolder: Freight Measures
+		lineageTag: 7ab858df-eba8-4806-b899-17acb3ebe7c3
+
+		changedProperty = Name
+
+		changedProperty = DisplayFolder
+
+		changedProperty = FormatString
+
+	measure 'Average Goods Value' = AVERAGE(Freights[Goods Value])
+		formatString: \$#,0.00;(\$#,0.00);\$#,0.00
+		displayFolder: Freight Measures
+		lineageTag: 12cedc51-430e-4272-928b-dad198acfab6
+
+		changedProperty = Name
+
+		changedProperty = DisplayFolder
+
+		changedProperty = FormatString
+
+		annotation PBI_FormatHint = {"currencyCulture":"en-US"}
+
+	measure 'Revenue per Kg' = DIVIDE([Total Revenue], [Total Weight], 0)
+		formatString: \$#,0.00;(\$#,0.00);\$#,0.00
+		displayFolder: Freight Measures
+		lineageTag: c7295682-c4a4-434f-a383-9a0ff14a0d10
+
+		changedProperty = Name
+
+		changedProperty = DisplayFolder
+
+		changedProperty = FormatString
+
+		annotation PBI_FormatHint = {"currencyCulture":"en-US"}
+
+	measure 'Freight Count' = COUNTROWS(Freights)
+		formatString: 0
+		displayFolder: Freight Measures
+		lineageTag: 67d25b9a-f5f3-4a33-8b81-4e19c439560c
+
+		changedProperty = Name
+
+		changedProperty = DisplayFolder
+
+	measure 'Average Revenue per Freight' = DIVIDE([Total Revenue], Freights[Freight Count], 0)
+		formatString: \$#,0.00;(\$#,0.00);\$#,0.00
+		displayFolder: Freight Measures
+		lineageTag: 886fd487-7c4d-4cb8-adff-871a252a7494
+
+		changedProperty = Name
+
+		changedProperty = DisplayFolder
+
+		changedProperty = FormatString
+
+		annotation PBI_FormatHint = {"currencyCulture":"en-US"}
+
+	measure 'Revenue per KM' = DIVIDE([Total Revenue], [Total KM Traveled], 0)
+		formatString: \$#,0.00;(\$#,0.00);\$#,0.00
+		displayFolder: Freight Measures
+		lineageTag: bc00e131-1e1e-45dc-b6d3-090b932af735
+
+		changedProperty = Name
+
+		changedProperty = DisplayFolder
+
+		changedProperty = FormatString
+
+		annotation PBI_FormatHint = {"currencyCulture":"en-US"}
+
+	measure 'Total Profit' = [Total Revenue] - [Total Cost]
+		formatString: \$#,0.00;(\$#,0.00);\$#,0.00
+		displayFolder: Profitability
+		lineageTag: 74c8678f-bdbd-41b2-8dca-6d68a5eb923b
+
+		changedProperty = Name
+
+		changedProperty = DisplayFolder
+
+		changedProperty = FormatString
+
+		annotation PBI_FormatHint = {"currencyCulture":"en-US"}
+
+	measure 'Profit Margin %' = DIVIDE([Total Profit], [Total Revenue], 0)
+		formatString: 0.00%;-0.00%;0.00%
+		displayFolder: Profitability
+		lineageTag: be33103b-ea2e-41f7-9ead-de82cf712805
+
+		changedProperty = Name
+
+		changedProperty = DisplayFolder
+
+		changedProperty = FormatString
+
+	measure 'Utilization Rate %' = DIVIDE(Freights[Freight Count], COUNTROWS(VALUES(Dates[Date])) * COUNTROWS(VALUES(Vehicles[Vehicle ID])))
+		formatString: 0.00%;-0.00%;0.00%
+		displayFolder: Vehicle Utilization
+		lineageTag: e0d3a82d-52d7-44db-bd2e-baff5a90f014
+
+		changedProperty = Name
+
+		changedProperty = DisplayFolder
+
+		changedProperty = FormatString
+
+	measure 'Customer Count' = DISTINCTCOUNT(Freights[Customer ID])
+		formatString: 0
+		displayFolder: Customer Info
+		lineageTag: 654f270a-72d4-423b-99bc-533a20ced5c5
+
+		changedProperty = Name
+
+		changedProperty = DisplayFolder
+
+	measure 'Vehicle Count' = DISTINCTCOUNT(Freights[Vehicle ID])
+		formatString: 0
+		displayFolder: Vehicle Info
+		lineageTag: b9a3b5eb-e682-4235-80c8-1e9bea1668a1
+
+		changedProperty = Name
+
+		changedProperty = DisplayFolder
+
+	measure 'Average Vehicle Age' = AVERAGEX(Vehicles, YEAR(TODAY()) - Vehicles[Year])
+		displayFolder: Vehicle Info
+		lineageTag: c3143ca3-fffc-4167-8a5d-f0d515f7c71f
+
+		changedProperty = DisplayFolder
+
+		changedProperty = Name
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column Date
+		dataType: dateTime
+		formatString: Short Date
+		sourceProviderType: date
+		lineageTag: 53660720-a3bb-477d-a2b5-b2ea6c6fd9ca
+		sourceLineageTag: Date
+		summarizeBy: none
+		sourceColumn: Date
+
+		changedProperty = DataType
+
+		changedProperty = FormatString
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+		annotation PBI_FormatHint = {"isCustom":true}
+
+	column 'Customer ID'
+		dataType: int64
+		isHidden
+		formatString: 0
+		sourceProviderType: int
+		lineageTag: 98405403-c2cb-4eda-b45b-8382ba334845
+		sourceLineageTag: CustomerID
+		summarizeBy: none
+		sourceColumn: CustomerID
+
+		changedProperty = SummarizeBy
+
+		changedProperty = IsHidden
+
+		changedProperty = Name
+
+		changedProperty = DisplayFolder
+
+		annotation SummarizationSetBy = User
+
+	column 'Vehicle ID'
+		dataType: int64
+		isHidden
+		formatString: 0
+		sourceProviderType: int
+		lineageTag: fa98ca8d-2162-4dc9-8fb8-82eeacc4c257
+		sourceLineageTag: VehicleID
+		summarizeBy: none
+		sourceColumn: VehicleID
+
+		changedProperty = SummarizeBy
+
+		changedProperty = Name
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = User
+
+	column 'Invoice Number'
+		dataType: int64
+		isHidden
+		formatString: 0
+		sourceProviderType: int
+		lineageTag: 6a412ff9-8157-4cfe-b8af-37be50dd5ec4
+		sourceLineageTag: InvoiceNumber
+		summarizeBy: none
+		sourceColumn: InvoiceNumber
+
+		changedProperty = SummarizeBy
+
+		changedProperty = IsHidden
+
+		changedProperty = Name
+
+		annotation SummarizationSetBy = User
+
+	column 'Freight ID'
+		dataType: string
+		isHidden
+		sourceProviderType: varchar(50)
+		lineageTag: 09cd18c2-cfa0-44e6-a094-17a9891de8ae
+		sourceLineageTag: FreightID
+		summarizeBy: none
+		sourceColumn: FreightID
+
+		changedProperty = IsHidden
+
+		changedProperty = Name
+
+		annotation SummarizationSetBy = Automatic
+
+	column City
+		dataType: string
+		sourceProviderType: varchar(200)
+		lineageTag: e3e9babf-4ee6-4224-b67a-343143c08fd6
+		sourceLineageTag: City
+		dataCategory: City
+		summarizeBy: none
+		sourceColumn: City
+
+		changedProperty = DataCategory
+
+		changedProperty = DisplayFolder
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Net Revenue'
+		dataType: double
+		formatString: \$#,0.00;(\$#,0.00);\$#,0.00
+		sourceProviderType: float
+		lineageTag: ea36fb1e-c0ff-46e4-a290-c2e6dc4cb434
+		sourceLineageTag: NetRevenue
+		summarizeBy: none
+		sourceColumn: NetRevenue
+
+		changedProperty = SummarizeBy
+
+		changedProperty = Name
+
+		changedProperty = FormatString
+
+		annotation SummarizationSetBy = User
+
+		annotation PBI_FormatHint = {"currencyCulture":"en-US"}
+
+	column 'Weight (Kg)'
+		dataType: double
+		sourceProviderType: float
+		lineageTag: d1ce89bd-ef6c-4152-bbd7-61bd997508b4
+		sourceLineageTag: Weight
+		summarizeBy: none
+		sourceColumn: Weight
+
+		changedProperty = SummarizeBy
+
+		changedProperty = Name
+
+		annotation SummarizationSetBy = User
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column 'Goods Value'
+		dataType: double
+		formatString: \$#,0.00;(\$#,0.00);\$#,0.00
+		sourceProviderType: float
+		lineageTag: 18e9c15c-775c-443d-8de5-d891c43467f4
+		sourceLineageTag: GoodsValue
+		summarizeBy: none
+		sourceColumn: GoodsValue
+
+		changedProperty = SummarizeBy
+
+		changedProperty = FormatString
+
+		changedProperty = Name
+
+		annotation SummarizationSetBy = User
+
+		annotation PBI_FormatHint = {"currencyCulture":"en-US"}
+
+	partition Freights = entity
+		mode: directLake
+		source
+			entityName: Freights
+			schemaName: Fleet
+			expressionSource: DatabaseQuery
+
+	annotation PBI_ResultType = Table
+

@@ -1,0 +1,109 @@
+table Vehicles
+	lineageTag: a53312b0-cc41-4b5f-9eca-5c1c9cb3c8c6
+	sourceLineageTag: [Fleet].[Vehicles]
+
+	column 'Vehicle ID'
+		dataType: int64
+		isHidden
+		formatString: 0
+		sourceProviderType: int
+		lineageTag: fa04b3cb-851f-4179-b40d-ff96c6e5d3ad
+		sourceLineageTag: VehicleID
+		summarizeBy: none
+		sourceColumn: VehicleID
+
+		changedProperty = SummarizeBy
+
+		changedProperty = Name
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = User
+
+	column Plate
+		dataType: string
+		sourceProviderType: varchar(50)
+		lineageTag: 65f12a5d-d3eb-4730-8a8b-bf45fe0bc68f
+		sourceLineageTag: Plate
+		summarizeBy: none
+		sourceColumn: Plate
+
+		annotation SummarizationSetBy = Automatic
+
+	column Brand
+		dataType: string
+		sourceProviderType: varchar(20)
+		lineageTag: 37ed8f84-cf32-42d9-8ea3-2782b3f68790
+		sourceLineageTag: Brand
+		summarizeBy: none
+		sourceColumn: Brand
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Truck Type'
+		dataType: string
+		sourceProviderType: varchar(70)
+		lineageTag: 2452d5e6-22e8-4091-8edd-b8131a056b3b
+		sourceLineageTag: TruckType
+		summarizeBy: none
+		sourceColumn: TruckType
+
+		changedProperty = Name
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Trailer Type'
+		dataType: string
+		sourceProviderType: varchar(50)
+		lineageTag: 7dc9c7b7-512f-477e-b9b2-7eca65519fc8
+		sourceLineageTag: TrailerType
+		summarizeBy: none
+		sourceColumn: TrailerType
+
+		changedProperty = Name
+
+		annotation SummarizationSetBy = Automatic
+
+	column Year
+		dataType: int64
+		formatString: 0
+		sourceProviderType: int
+		lineageTag: dfca57e9-f901-465b-8410-d109e594a3bb
+		sourceLineageTag: Year
+		summarizeBy: none
+		sourceColumn: Year
+
+		changedProperty = SummarizeBy
+
+		annotation SummarizationSetBy = User
+
+	hierarchy 'Vehicle Specs Hierarchy'
+		lineageTag: 9fd796d8-d9e4-4b1b-b781-b66062d09b98
+
+		level Brand
+			lineageTag: 27cfdec7-2018-45a2-b0b2-cb5596219603
+			column: Brand
+
+		level 'Truck Type'
+			lineageTag: f3cf609d-9079-4ad9-ba4f-a6afd6be4e55
+			column: 'Truck Type'
+
+		level 'Trailer Type'
+			lineageTag: 5b50ba1e-39bb-45cf-bad0-82e96f8f1015
+			column: 'Trailer Type'
+
+		level Plate
+			lineageTag: 1e68abe8-a105-40c9-9cd6-0391715e4e49
+			column: Plate
+
+		changedProperty = Name
+
+	partition Vehicles = entity
+		mode: directLake
+		source
+			entityName: Vehicles
+			schemaName: Fleet
+			expressionSource: DatabaseQuery
+
+	annotation PBI_ResultType = Table
+
