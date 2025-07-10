@@ -2,106 +2,49 @@
   "properties": {
     "activities": [
       {
-        "name": "Ingest_transform_data",
-        "type": "RefreshDataflow",
+        "name": "Lookup_Last_Run",
+        "type": "Lookup",
         "dependsOn": [],
         "policy": {
           "timeout": "0.12:00:00",
-          "retry": 3,
-          "retryIntervalInSeconds": 30,
-          "secureOutput": false,
-          "secureInput": false
-        },
-        "typeProperties": {
-          "dataflowId": "44658964-9eb6-4f4f-ac1d-401c3745e99d",
-          "workspaceId": "392a2d84-c0fd-45f9-9de2-248d1f8126fd",
-          "notifyOption": "NoNotification",
-          "dataflowType": "Dataflow-Gen2"
-        }
-      },
-      {
-        "name": "Staging_views",
-        "type": "Script",
-        "dependsOn": [
-          {
-            "activity": "Ingest_transform_data",
-            "dependencyConditions": [
-              "Succeeded"
-            ]
-          }
-        ],
-        "policy": {
-          "timeout": "0.12:00:00",
           "retry": 0,
           "retryIntervalInSeconds": 30,
           "secureOutput": false,
           "secureInput": false
         },
-        "linkedService": {
-          "name": "WH_Fleet",
-          "properties": {
-            "annotations": [],
-            "type": "DataWarehouse",
-            "typeProperties": {
-              "endpoint": "xisdbyhsv57ubp3vvd3oymv5ou-qqwsuop5yd4ulhpcesgr7ajg7u.datawarehouse.fabric.microsoft.com",
-              "artifactId": "b972a598-4cfa-46ca-8b9e-64608cf1b204",
-              "workspaceId": "392a2d84-c0fd-45f9-9de2-248d1f8126fd"
-            }
-          }
-        },
         "typeProperties": {
-          "scripts": [
-            {
-              "type": "NonQuery",
-              "text": {
-                "value": "DROP VIEW IF EXISTS Fleet.Staging_Customers;\r\nEXEC('CREATE VIEW Fleet.Staging_Customers\r\nAS SELECT DISTINCT\r\nCustomerID,\r\nCity,\r\nState,\r\nLatitude,\r\nLongitude\r\nFROM LH_Fleet.dbo.Customers;');\r\n\r\nDROP VIEW IF EXISTS Fleet.Staging_Drivers;\r\nEXEC('CREATE VIEW Fleet.Staging_Drivers\r\nAS SELECT DISTINCT\r\nDriverID,\r\nDriver\r\nFROM LH_Fleet.dbo.Drivers;');\r\n\r\nDROP VIEW IF EXISTS Fleet.Staging_Vehicles;\r\nEXEC('CREATE VIEW Fleet.Staging_Vehicles \r\nAS SELECT DISTINCT \r\nVehicleID,\r\nPlate,\r\nBrand,\r\nTruckType,\r\nTrailerType,\r\nYear\r\nFROM LH_Fleet.dbo.Vehicles;');\r\n\r\nDROP VIEW IF EXISTS Fleet.Staging_Costs;\r\nEXEC('CREATE VIEW Fleet.Staging_Costs\r\nAS SELECT DISTINCT\r\nDate,\r\nVehicleID,\r\nDriverID,\r\nKMTraveled,\r\nLiters,\r\nFuel,\r\nMaintenance,\r\nFixedCost\r\nFROM LH_Fleet.dbo.Costs;');\r\n\r\nDROP VIEW IF EXISTS Fleet.Staging_Freights\r\nEXEC('CREATE VIEW Fleet.Staging_Freights \r\nAS SELECT DISTINCT\r\nDate,\r\nCustomerID,\r\nVehicleID,\r\nInvoiceNumber,\r\nFreightID,\r\nCity,\r\nNetRevenue,\r\nWeight,\r\nGoodsValue\r\nFROM LH_Fleet.dbo.Freights;');\r\n\r\nDROP VIEW IF EXISTS Fleet.Staging_Dates;\r\nEXEC('CREATE VIEW Fleet.Staging_Dates\r\nAS SELECT DISTINCT \r\nDate,\r\nYear,\r\nQuarter,\r\nMonthNumber,\r\nMonthName,\r\nDay,\r\nDayName,\r\nDayOfWeek\r\nFROM LH_Fleet.dbo.Dates;');\r\n",
-                "type": "Expression"
+          "source": {
+            "type": "DataWarehouseSource",
+            "sqlReaderQuery": "SELECT COALESCE(MAX(ProcessedTime),\nCAST('1970-01-01 00:00:00.000' AS DATETIME2(3)))\nAS LastRunTime\nFROM Fleet.IngestionLogs;\n",
+            "queryTimeout": "02:00:00",
+            "partitionOption": "None"
+          },
+          "datasetSettings": {
+            "annotations": [],
+            "linkedService": {
+              "name": "WH_Fleet",
+              "properties": {
+                "annotations": [],
+                "type": "DataWarehouse",
+                "typeProperties": {
+                  "endpoint": "xisdbyhsv57ubp3vvd3oymv5ou-qqwsuop5yd4ulhpcesgr7ajg7u.datawarehouse.fabric.microsoft.com",
+                  "artifactId": "b972a598-4cfa-46ca-8b9e-64608cf1b204",
+                  "workspaceId": "392a2d84-c0fd-45f9-9de2-248d1f8126fd"
+                }
               }
-            }
-          ],
-          "scriptBlockExecutionTimeout": "02:00:00"
-        }
-      },
-      {
-        "name": "Upsert_procedure",
-        "type": "SqlServerStoredProcedure",
-        "dependsOn": [
-          {
-            "activity": "Staging_views",
-            "dependencyConditions": [
-              "Succeeded"
-            ]
-          }
-        ],
-        "policy": {
-          "timeout": "0.12:00:00",
-          "retry": 3,
-          "retryIntervalInSeconds": 30,
-          "secureOutput": false,
-          "secureInput": false
-        },
-        "typeProperties": {
-          "storedProcedureName": "[Fleet].[upsert_proc]"
-        },
-        "linkedService": {
-          "name": "WH_Fleet",
-          "properties": {
-            "annotations": [],
-            "type": "DataWarehouse",
-            "typeProperties": {
-              "endpoint": "xisdbyhsv57ubp3vvd3oymv5ou-qqwsuop5yd4ulhpcesgr7ajg7u.datawarehouse.fabric.microsoft.com",
-              "artifactId": "b972a598-4cfa-46ca-8b9e-64608cf1b204",
-              "workspaceId": "392a2d84-c0fd-45f9-9de2-248d1f8126fd"
-            }
+            },
+            "type": "DataWarehouseTable",
+            "schema": [],
+            "typeProperties": {}
           }
         }
       },
       {
-        "name": "UpdateLogsTable",
-        "type": "Script",
+        "name": "Lookup_Source",
+        "type": "Lookup",
         "dependsOn": [
           {
-            "activity": "Upsert_procedure",
+            "activity": "Lookup_Last_Run",
             "dependencyConditions": [
               "Succeeded"
             ]
@@ -114,79 +57,233 @@
           "secureOutput": false,
           "secureInput": false
         },
-        "linkedService": {
-          "name": "WH_Fleet",
-          "properties": {
+        "typeProperties": {
+          "source": {
+            "type": "SqlServerSource",
+            "sqlReaderQuery": "SELECT MAX([Date]) AS MaxDate\r\nFROM Fleet.Freights;\r\n",
+            "queryTimeout": "02:00:00",
+            "partitionOption": "None"
+          },
+          "datasetSettings": {
             "annotations": [],
-            "type": "DataWarehouse",
+            "type": "SqlServerTable",
+            "schema": [],
             "typeProperties": {
-              "endpoint": "xisdbyhsv57ubp3vvd3oymv5ou-qqwsuop5yd4ulhpcesgr7ajg7u.datawarehouse.fabric.microsoft.com",
-              "artifactId": "b972a598-4cfa-46ca-8b9e-64608cf1b204",
-              "workspaceId": "392a2d84-c0fd-45f9-9de2-248d1f8126fd"
+              "database": "KudzaiSolutions"
+            },
+            "externalReferences": {
+              "connection": "e0992833-584f-4fa5-9dc5-1146a1f5da1a"
             }
           }
-        },
+        }
+      },
+      {
+        "name": "IfNewData",
+        "type": "IfCondition",
+        "dependsOn": [
+          {
+            "activity": "Lookup_Source",
+            "dependencyConditions": [
+              "Succeeded"
+            ]
+          }
+        ],
         "typeProperties": {
-          "scripts": [
+          "expression": {
+            "value": "@greater(activity('Lookup_Source').output.firstRow.MaxDate, activity('Lookup_Last_Run').output.firstRow.LastRunTime)",
+            "type": "Expression"
+          },
+          "ifFalseActivities": [],
+          "ifTrueActivities": [
             {
-              "type": "NonQuery",
-              "text": {
-                "value": "INSERT INTO Fleet.IngestionLogs (PipelineName, ProcessedTime, Status)\r\nVALUES ('PL_Fleet', SYSUTCDATETIME(), 'Succeeded');",
-                "type": "Expression"
+              "name": "Ingest_transform_data",
+              "type": "RefreshDataflow",
+              "dependsOn": [],
+              "policy": {
+                "timeout": "0.12:00:00",
+                "retry": 3,
+                "retryIntervalInSeconds": 30,
+                "secureOutput": false,
+                "secureInput": false
+              },
+              "typeProperties": {
+                "dataflowId": "44658964-9eb6-4f4f-ac1d-401c3745e99d",
+                "workspaceId": "392a2d84-c0fd-45f9-9de2-248d1f8126fd",
+                "notifyOption": "NoNotification",
+                "dataflowType": "Dataflow-Gen2"
               }
-            }
-          ],
-          "scriptBlockExecutionTimeout": "02:00:00"
-        }
-      },
-      {
-        "name": "SM_Fleet_Refresh",
-        "type": "PBISemanticModelRefresh",
-        "dependsOn": [
-          {
-            "activity": "UpdateLogsTable",
-            "dependencyConditions": [
-              "Succeeded"
-            ]
-          }
-        ],
-        "policy": {
-          "timeout": "0.12:00:00",
-          "retry": 0,
-          "retryIntervalInSeconds": 30,
-          "secureOutput": false,
-          "secureInput": false
-        },
-        "typeProperties": {
-          "method": "post",
-          "waitOnCompletion": true,
-          "commitMode": "Transactional",
-          "operationType": "SemanticModelRefresh",
-          "groupId": "392a2d84-c0fd-45f9-9de2-248d1f8126fd",
-          "datasetId": "9225467d-6833-4e72-950a-b8bc0a847188",
-          "objects": [
-            {
-              "table": "Customers"
             },
             {
-              "table": "Drivers"
+              "name": "Staging_views",
+              "type": "Script",
+              "dependsOn": [
+                {
+                  "activity": "Ingest_transform_data",
+                  "dependencyConditions": [
+                    "Succeeded"
+                  ]
+                }
+              ],
+              "policy": {
+                "timeout": "0.12:00:00",
+                "retry": 0,
+                "retryIntervalInSeconds": 30,
+                "secureOutput": false,
+                "secureInput": false
+              },
+              "linkedService": {
+                "name": "WH_Fleet",
+                "properties": {
+                  "annotations": [],
+                  "type": "DataWarehouse",
+                  "typeProperties": {
+                    "endpoint": "xisdbyhsv57ubp3vvd3oymv5ou-qqwsuop5yd4ulhpcesgr7ajg7u.datawarehouse.fabric.microsoft.com",
+                    "artifactId": "b972a598-4cfa-46ca-8b9e-64608cf1b204",
+                    "workspaceId": "392a2d84-c0fd-45f9-9de2-248d1f8126fd"
+                  }
+                }
+              },
+              "typeProperties": {
+                "scripts": [
+                  {
+                    "type": "NonQuery",
+                    "text": {
+                      "value": "DROP VIEW IF EXISTS Fleet.Staging_Customers;\r\nEXEC('CREATE VIEW Fleet.Staging_Customers\r\nAS SELECT DISTINCT\r\nCustomerID,\r\nCity,\r\nState,\r\nLatitude,\r\nLongitude\r\nFROM LH_Fleet.dbo.Customers;');\r\n\r\nDROP VIEW IF EXISTS Fleet.Staging_Drivers;\r\nEXEC('CREATE VIEW Fleet.Staging_Drivers\r\nAS SELECT DISTINCT\r\nDriverID,\r\nDriver\r\nFROM LH_Fleet.dbo.Drivers;');\r\n\r\nDROP VIEW IF EXISTS Fleet.Staging_Vehicles;\r\nEXEC('CREATE VIEW Fleet.Staging_Vehicles \r\nAS SELECT DISTINCT \r\nVehicleID,\r\nPlate,\r\nBrand,\r\nTruckType,\r\nTrailerType,\r\nYear\r\nFROM LH_Fleet.dbo.Vehicles;');\r\n\r\nDROP VIEW IF EXISTS Fleet.Staging_Costs;\r\nEXEC('CREATE VIEW Fleet.Staging_Costs\r\nAS SELECT DISTINCT\r\nDate,\r\nVehicleID,\r\nDriverID,\r\nKMTraveled,\r\nLiters,\r\nFuel,\r\nMaintenance,\r\nFixedCost\r\nFROM LH_Fleet.dbo.Costs;');\r\n\r\nDROP VIEW IF EXISTS Fleet.Staging_Freights\r\nEXEC('CREATE VIEW Fleet.Staging_Freights \r\nAS SELECT DISTINCT\r\nDate,\r\nCustomerID,\r\nVehicleID,\r\nInvoiceNumber,\r\nFreightID,\r\nCity,\r\nNetRevenue,\r\nWeight,\r\nGoodsValue\r\nFROM LH_Fleet.dbo.Freights;');\r\n\r\nDROP VIEW IF EXISTS Fleet.Staging_Dates;\r\nEXEC('CREATE VIEW Fleet.Staging_Dates\r\nAS SELECT DISTINCT \r\nDate,\r\nYear,\r\nQuarter,\r\nMonthNumber,\r\nMonthName,\r\nDay,\r\nDayName,\r\nDayOfWeek\r\nFROM LH_Fleet.dbo.Dates;');\r\n",
+                      "type": "Expression"
+                    }
+                  }
+                ],
+                "scriptBlockExecutionTimeout": "02:00:00"
+              }
             },
             {
-              "table": "Costs"
+              "name": "Upsert_procedure",
+              "type": "SqlServerStoredProcedure",
+              "dependsOn": [
+                {
+                  "activity": "Staging_views",
+                  "dependencyConditions": [
+                    "Succeeded"
+                  ]
+                }
+              ],
+              "policy": {
+                "timeout": "0.12:00:00",
+                "retry": 3,
+                "retryIntervalInSeconds": 30,
+                "secureOutput": false,
+                "secureInput": false
+              },
+              "typeProperties": {
+                "storedProcedureName": "[Fleet].[upsert_proc]"
+              },
+              "linkedService": {
+                "name": "WH_Fleet",
+                "properties": {
+                  "annotations": [],
+                  "type": "DataWarehouse",
+                  "typeProperties": {
+                    "endpoint": "xisdbyhsv57ubp3vvd3oymv5ou-qqwsuop5yd4ulhpcesgr7ajg7u.datawarehouse.fabric.microsoft.com",
+                    "artifactId": "b972a598-4cfa-46ca-8b9e-64608cf1b204",
+                    "workspaceId": "392a2d84-c0fd-45f9-9de2-248d1f8126fd"
+                  }
+                }
+              }
             },
             {
-              "table": "Freights"
+              "name": "UpdateLogsTable",
+              "type": "Script",
+              "dependsOn": [
+                {
+                  "activity": "Upsert_procedure",
+                  "dependencyConditions": [
+                    "Succeeded"
+                  ]
+                }
+              ],
+              "policy": {
+                "timeout": "0.12:00:00",
+                "retry": 0,
+                "retryIntervalInSeconds": 30,
+                "secureOutput": false,
+                "secureInput": false
+              },
+              "linkedService": {
+                "name": "WH_Fleet",
+                "properties": {
+                  "annotations": [],
+                  "type": "DataWarehouse",
+                  "typeProperties": {
+                    "endpoint": "xisdbyhsv57ubp3vvd3oymv5ou-qqwsuop5yd4ulhpcesgr7ajg7u.datawarehouse.fabric.microsoft.com",
+                    "artifactId": "b972a598-4cfa-46ca-8b9e-64608cf1b204",
+                    "workspaceId": "392a2d84-c0fd-45f9-9de2-248d1f8126fd"
+                  }
+                }
+              },
+              "typeProperties": {
+                "scripts": [
+                  {
+                    "type": "NonQuery",
+                    "text": {
+                      "value": "INSERT INTO Fleet.IngestionLogs (PipelineName, ProcessedTime, Status)\r\nVALUES ('PL_Fleet', SYSUTCDATETIME(), 'Succeeded');",
+                      "type": "Expression"
+                    }
+                  }
+                ],
+                "scriptBlockExecutionTimeout": "02:00:00"
+              }
             },
             {
-              "table": "Dates"
-            },
-            {
-              "table": "Vehicles"
+              "name": "SM_Fleet_Refresh",
+              "type": "PBISemanticModelRefresh",
+              "dependsOn": [
+                {
+                  "activity": "UpdateLogsTable",
+                  "dependencyConditions": [
+                    "Succeeded"
+                  ]
+                }
+              ],
+              "policy": {
+                "timeout": "0.12:00:00",
+                "retry": 0,
+                "retryIntervalInSeconds": 30,
+                "secureOutput": false,
+                "secureInput": false
+              },
+              "typeProperties": {
+                "method": "post",
+                "waitOnCompletion": true,
+                "commitMode": "Transactional",
+                "operationType": "SemanticModelRefresh",
+                "groupId": "392a2d84-c0fd-45f9-9de2-248d1f8126fd",
+                "datasetId": "9225467d-6833-4e72-950a-b8bc0a847188",
+                "objects": [
+                  {
+                    "table": "Customers"
+                  },
+                  {
+                    "table": "Drivers"
+                  },
+                  {
+                    "table": "Costs"
+                  },
+                  {
+                    "table": "Freights"
+                  },
+                  {
+                    "table": "Dates"
+                  },
+                  {
+                    "table": "Vehicles"
+                  }
+                ]
+              },
+              "externalReferences": {
+                "connection": "c02876ce-2b69-40c2-aa37-0468298fcab6"
+              }
             }
           ]
-        },
-        "externalReferences": {
-          "connection": "c02876ce-2b69-40c2-aa37-0468298fcab6"
         }
       }
     ],
